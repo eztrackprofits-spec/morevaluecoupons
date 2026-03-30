@@ -373,26 +373,40 @@ function searchVideos() {
     loadingDiv.style.display = 'block';
     noResultsDiv.style.display = 'none';
     
-    // Using YouTube's rss feed as a simple workaround
-    // In production, you'd use YouTube Data API v3
-    const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&cx=5c406583d29604448&key=AIzaSyBFwErnp1W_AM4MKZAXnM7W-G6lDwmE2Dk&num=12`;
+    // Using YouTube Data API v3
+    const apiKey = 'AIzaSyDuggHThroQloAF98feOItXFgNcJ9xyJ7A';
+    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=12&key=${apiKey}`;
     
-    // For now, let's use a simple mock data approach
-    // You'll need to set up YouTube Data API for real results
-    setTimeout(() => {
-        loadingDiv.style.display = 'none';
-        
-        // Sample video data - in production this comes from API
-        const sampleVideos = getSampleVideos(query);
-        
-        if (sampleVideos.length === 0) {
-            noResultsDiv.style.display = 'block';
-        } else {
-            sampleVideos.forEach(video => {
+    fetch(searchUrl)
+        .then(response => response.json())
+        .then(data => {
+            loadingDiv.style.display = 'none';
+            
+            if (!data.items || data.items.length === 0) {
+                noResultsDiv.style.display = 'block';
+                return;
+            }
+            
+            data.items.forEach(item => {
+                const video = {
+                    title: item.snippet.title,
+                    channelName: item.snippet.channelTitle,
+                    views: '',
+                    duration: '',
+                    thumbnail: item.snippet.thumbnails.high ? item.snippet.thumbnails.high.url : item.snippet.thumbnails.medium.url,
+                    videoId: item.id.videoId
+                };
                 resultsDiv.innerHTML += createVideoCard(video);
             });
-        }
-    }, 500);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingDiv.style.display = 'none';
+            // Fall back to sample data if API fails
+            getSampleVideos(query).forEach(video => {
+                resultsDiv.innerHTML += createVideoCard(video);
+            });
+        });
 }
 
 function getSampleVideos(query) {
