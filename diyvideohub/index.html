@@ -366,6 +366,38 @@ function searchVideos() {
     const query = document.getElementById('searchInput').value;
     if (!query) return;
     
+    // Check search limit (3 free per day)
+    const today = new Date().toDateString();
+    const lastSearchDate = localStorage.getItem('diyvideohub_search_date');
+    let searchCount = parseInt(localStorage.getItem('diyvideohub_search_count') || '0');
+    
+    if (lastSearchDate !== today) {
+        // New day, reset count
+        searchCount = 0;
+        localStorage.setItem('diyvideohub_search_date', today);
+    }
+    
+    // Allow 3 free searches per day
+    if (searchCount >= 3) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = `
+            <div style="text-align:center; padding: 40px; background: #fff3cd; border-radius: 15px; margin: 20px auto; max-width: 600px;">
+                <h2 style="color: #856404; margin-bottom: 15px;">📊 Daily Free Limit Reached</h2>
+                <p style="color: #666; margin-bottom: 20px;">You've used all 3 of your free searches today.</p>
+                <p style="color: #666; margin-bottom: 20px;">Upgrade to <strong>Pro</strong> for unlimited searches!</p>
+                <a href="https://diyvideohub.com/pro.html" style="background: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;">
+                    🚀 Get Pro — Unlimited Searches
+                </a>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #999;">Free searches reset at midnight!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Increment search count
+    searchCount++;
+    localStorage.setItem('diyvideohub_search_count', searchCount.toString());
+    
     const resultsDiv = document.getElementById('results');
     const loadingDiv = document.getElementById('loading');
     const noResultsDiv = document.getElementById('noResults');
@@ -373,6 +405,10 @@ function searchVideos() {
     resultsDiv.innerHTML = '';
     loadingDiv.style.display = 'block';
     noResultsDiv.style.display = 'none';
+    
+    // Show remaining searches
+    const remaining = 3 - searchCount;
+    resultsDiv.innerHTML = `<p style="text-align:center; color: #666; font-size: 0.9rem;">📊 ${remaining} free search${remaining !== 1 ? 'es' : ''} remaining today</p>`;
     
     // Using YouTube Data API v3
     const apiKey = 'AIzaSyDuggHThroQloAF98feOItXFgNcJ9xyJ7A';
