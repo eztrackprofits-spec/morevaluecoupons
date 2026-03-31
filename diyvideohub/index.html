@@ -563,6 +563,11 @@ function submitEmailAndDownload() {
     performDownload();
     
     alert('Thanks! Download started. Check your downloads folder.');
+    
+    // Redirect to thank you page after 2 seconds
+    setTimeout(() => {
+        window.location.href = 'https://diyvideohub.com/thanks.html';
+    }, 2000);
 }
 
 function performDownload() {
