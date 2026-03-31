@@ -206,6 +206,14 @@ header("Cache-Control: max-age=3600, must-revalidate");
     </div>
 </div>
 
+<!-- Subtle Restaurant Banner -->
+<div style="text-align: center; margin: 15px 20px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+    <p style="margin: 0; font-size: 0.95em; color: #666;">
+        🍽️ Also available: <strong>FREE Combo Meals</strong> at 25+ of America's Favorite Restaurants — 
+        <a href="https://morevaluecoupons.com/codes.php" style="color: #1e3c72; text-decoration: none; font-weight: 600;">Click here to see all restaurant offers →</a>
+    </p>
+</div>
+
 <!-- Main Content -->
 <main class="container my-5">
     
