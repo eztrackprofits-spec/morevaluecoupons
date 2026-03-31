@@ -375,7 +375,7 @@ function searchVideos() {
     
     // Using YouTube Data API v3
     const apiKey = 'AIzaSyDuggHThroQloAF98feOItXFgNcJ9xyJ7A';
-    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=12&key=${apiKey}`;
+    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=25&key=${apiKey}`;
     
     fetch(searchUrl)
         .then(response => response.json())
@@ -386,6 +386,10 @@ function searchVideos() {
                 noResultsDiv.style.display = 'block';
                 return;
             }
+            
+            // Store results globally for download
+            window.lastSearchResults = data.items;
+            window.lastSearchQuery = query;
             
             data.items.forEach(item => {
                 const video = {
@@ -398,6 +402,18 @@ function searchVideos() {
                 };
                 resultsDiv.innerHTML += createVideoCard(video);
             });
+            
+            // Add Download All button
+            const downloadBtn = document.createElement('div');
+            downloadBtn.style.cssText = 'text-align:center; margin: 30px auto; padding: 25px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; max-width: 600px;';
+            downloadBtn.innerHTML = `
+                <h3 style="color: white; margin-bottom: 15px;">📥 Download All ${data.items.length} Results</h3>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px;">Get a text file with ALL video titles and YouTube links!</p>
+                <button onclick="downloadAllResults()" style="background: #ffd700; color: #1e3c72; border: none; padding: 15px 35px; font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    🎁 Download Free (.txt)
+                </button>
+            `;
+            resultsDiv.appendChild(downloadBtn);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -488,6 +504,42 @@ function createVideoCard(video) {
 function addToPlaylist(videoId, title) {
     alert('Added to playlist: ' + title);
     // In production: save to localStorage or user account
+}
+
+function downloadAllResults() {
+    if (!window.lastSearchResults || window.lastSearchResults.length === 0) {
+        alert('No results to download!');
+        return;
+    }
+    
+    let content = `DIYVideoHub.com - Search Results for: "${window.lastSearchQuery}"\n`;
+    content += `Generated: ${new Date().toLocaleString()}\n`;
+    content += `=================================================\n\n`;
+    
+    window.lastSearchResults.forEach((item, index) => {
+        const title = item.snippet.title;
+        const channel = item.snippet.channelTitle;
+        const videoUrl = `https://www.youtube.com/watch?v=${item.id.videoId}`;
+        content += `${index + 1}. ${title}\n`;
+        content += `   Channel: ${channel}\n`;
+        content += `   Link: ${videoUrl}\n\n`;
+    });
+    
+    content += `=================================================\n`;
+    content += `Total: ${window.lastSearchResults.length} videos\n`;
+    content += `Powered by DIYVideoHub.com\n`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `diyvideohub-${window.lastSearchQuery.replace(/[^a-z0-9]/gi, '-')}-results.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert('Download started! Check your downloads folder.');
 }
 
 // Initialize with default search
