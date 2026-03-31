@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIYVideoHub Pro - Get Unlimited Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 50px 20px; text-align: center; }
+        .box { background: white; color: #333; max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        h1 { color: #1e3c72; }
+        .price { font-size: 3rem; font-weight: bold; color: #1e3c72; margin: 20px 0; }
+        .features { text-align: left; margin: 20px 0; }
+        .features li { margin: 10px 0; }
+        #paypal-container-zE7PC4MNPYW7JU { margin: 20px 0; }
+    </style>
+    <script src="https://www.paypal.com/sdk/js?client-id=BAAtwbAPLb4G92FHQx-Be2aor78zl_-E_a6oyNrM7SQdMwgL8RlrB7TBQYBFZIEoN2f6onGJETvQLIde9c&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
+</head>
+<body>
+    <div class="box">
+        <h1>🚀 DIYVideoHub Pro</h1>
+        <p>One-time payment for lifetime Pro access!</p>
+        <div class="price">$5</div>
+        <ul class="features">
+            <li>✅ Unlimited searches</li>
+            <li>✅ No email required</li>
+            <li>✅ Custom playlists</li>
+            <li>✅ Priority support</li>
+        </ul>
+        
+        <div id="paypal-container-zE7PC4MNPYW7JU"></div>
+        
+        <p style="font-size:0.9rem; color:#666; margin-top:20px;">Click above to pay $5 via PayPal</p>
+    </div>
+
+    <script>
+        paypal.HostedButtons({
+            el: "#paypal-container-zE7PC4MNPYW7JU",
+            hostedButtonId: "zE7PC4MNPYW7JU",
+        }).render("#paypal-container-zE7PC4MNPYW7JU");
+    </script>
+</body>
+</html>
