@@ -513,6 +513,54 @@ function downloadAllResults() {
         return;
     }
     
+    // Check if email already captured
+    const emailCaptured = localStorage.getItem('diyvideohub_email');
+    
+    if (emailCaptured) {
+        // User already gave email - allow download
+        performDownload();
+        return;
+    }
+    
+    // Show email capture modal
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center;';
+    modal.innerHTML = `
+        <div style="background:white; padding:30px; border-radius:15px; max-width:450px; text-align:center;">
+            <h2 style="color:#1e3c72; margin-bottom:15px;">📥 Get Your Download</h2>
+            <p style="color:#666; margin-bottom:20px;">Enter your email to unlock the free download. We respect your privacy!</p>
+            <input type="email" id="downloadEmail" placeholder="Your email address" style="width:100%; padding:15px; border:2px solid #ddd; border-radius:8px; font-size:16px; margin-bottom:15px;">
+            <button onclick="submitEmailAndDownload()" style="background:linear-gradient(135deg, #667eea, #764ba2); color:white; border:none; padding:15px 30px; font-size:1.1rem; font-weight:bold; border-radius:25px; cursor:pointer; width:100%;">
+                🎁 Get Free Download
+            </button>
+            <p style="font-size:0.8rem; color:#999; margin-top:15px;">By downloading, you agree to receive updates from DIYVideoHub (unsubscribe anytime).</p>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function submitEmailAndDownload() {
+    const email = document.getElementById('downloadEmail').value;
+    if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address!');
+        return;
+    }
+    
+    // Save email to localStorage
+    localStorage.setItem('diyvideohub_email', email);
+    
+    // Remove modal
+    document.body.lastElementChild.remove();
+    
+    // Now perform download
+    performDownload();
+    
+    alert('Thanks! Download started. Check your downloads folder.');
+}
+
+function performDownload() {
+    if (!window.lastSearchResults || window.lastSearchResults.length === 0) return;
+    
     let content = `DIYVideoHub.com - Search Results for: "${window.lastSearchQuery}"\n`;
     content += `Generated: ${new Date().toLocaleString()}\n`;
     content += `=================================================\n\n`;
@@ -539,8 +587,6 @@ function downloadAllResults() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
-    alert('Download started! Check your downloads folder.');
 }
 
 // Initialize with default search
