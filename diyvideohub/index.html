@@ -549,6 +549,13 @@ function submitEmailAndDownload() {
     // Save email to localStorage
     localStorage.setItem('diyvideohub_email', email);
     
+    // Send email to Formspree so Patrick gets it
+    fetch('https://formspree.io/f/xgopykyl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: 'DIYVideoHub download' })
+    }).catch(err => console.log('Email collection error:', err));
+    
     // Remove modal
     document.body.lastElementChild.remove();
     
